@@ -25,7 +25,7 @@ Toward an infinite random awful action games generator
 
 [genetic.js](http://subprotocol.com/system/genetic-js.html) /
 [xorshift](https://github.com/AndreasMadsen/xorshift) /
-[lz-string](http://pieroxy.net/blog/pages/lz-string/index.html)
+[lz-string](http://pieroxy.net/blog/pages/lz-string/index.html) /
 [lodash](https://lodash.com/) /
 [animation-frame](https://github.com/kof/animation-frame) /
 [game-keyboard](https://github.com/ericlathrop/game-keyboard) /
