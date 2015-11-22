@@ -17,9 +17,9 @@ Toward an infinite random awful action games generator
 * The fitness is evaluated by two AI players, one is smart and one is dull
 * The fitness becomes higher when the smart AI player dies fewer times relative to the dull AI player
 
-** The mechanism is heavily inspired by [Mechanic Miner: Reflection-Driven Game Mechanic Discovery and Level Design](http://ccg.doc.gold.ac.uk/papers/cook_evogames13.pdf)
+ * The mechanism is heavily inspired by [Mechanic Miner: Reflection-Driven Game Mechanic Discovery and Level Design](http://ccg.doc.gold.ac.uk/papers/cook_evogames13.pdf)
 
-** The detailed expression is in comments of [RandomShips.ts](https://github.com/abagames/GameMechRandomizer/blob/master/src/sample/RandomShips.ts)
+ * The detailed expression is in comments of [RandomShips.ts](https://github.com/abagames/GameMechRandomizer/blob/master/src/sample/RandomShips.ts)
 
 ### Acknowledgement
 
