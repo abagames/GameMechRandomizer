@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, height=device-height,
+    user-scalable=no, initial-scale=1, maximum-scale=1">
+
+    <title>Random Ships</title>
+    <link rel="stylesheet" href="app.css" type="text/css" />
+
+    <script src="libs/SAT/SAT.min.js"></script>
+    <script src="libs/AnimationFrame/AnimationFrame.min.js"></script>
+    <script src="libs/game_keyboard/game_keyboard.js"></script>
+    <script src="libs/snap.svg/snap.svg-min.js"></script>
+    <script src="libs/GIFEncoder/LZWEncoder.js"></script>
+    <script src="libs/GIFEncoder/NeuQuant.js"></script>
+    <script src="libs/GIFEncoder/b64.js"></script>
+    <script src="libs/GIFEncoder/GIFEncoder.js"></script>
+    <script src="libs/GifCaptureCanvas/GifCaptureCanvas.js"></script>
+
+    <script src="../../dist/libs/lodash/lodash.custom.min.js"></script>
+    <script src="../../dist/libs/genetic/genetic-0.1.14.js"></script>
+    <script src="../../dist/libs/xorshift/xorshift.js"></script>
+    <script src="../../dist/libs/lz-string/lz-string.min.js"></script>
+    <script src="../GameMechRandomizer.js"></script>
+
+    <script src="MyGameUtil.js"></script>
+    <script src="GmrSampleUtil.js"></script>
+    <script src="RandomShips.js"></script>
+</head>
+
+<body>
+    <p id="generation"></p>
+    <div id="snapDiv"></div>
+    <p>shot purple boxes / [arrow]: move [Z]: shot</p>
+    <p id="nextGeneration"></p>
+    <p>[R]: reset to a zero generation / [U]: create the URL for this game</p>
+    <script src="http://localhost:35729/livereload.js"></script>
+</body>
+
+</html>

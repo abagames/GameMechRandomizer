@@ -1,0 +1,22 @@
+﻿html, body {
+    height: 98%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: white;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    width: 100%;
+    text-align: center;
+    line-height: 0.5em;
+}
+
+div#snapDiv {
+    width: 82vmin;
+    height: 82vmin;
+    margin: 0 auto 0 auto;
+}
