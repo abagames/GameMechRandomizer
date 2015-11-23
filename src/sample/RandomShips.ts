@@ -17,20 +17,22 @@ namespace RandomShips {
 
 	export function onLoad() {
 		/*
-		 * cretate GmrSampleUtil instance
-		 *  - GmrSampleUtil and GameMechRandomizer randomize properties of actors in
-		 *    games and use them as seed entities of a genetic algorithm
-		 *  - entities are selected according to the fitness of each game
+		 * cretate a GmrSampleUtil instance
+		 *  - GmrSampleUtil and GameMechRandomizer change properties of actors in
+		 *    games when the button is pressed
+		 *  - changing patterns are created randomly and these patterns evolve
+		 *    with a genetic algorithm
+		 *  - patterns are selected according to the fitness of each game
 		 *  - fitness shows the extent how the game is playable
 		 *  - fitness is evaluated by two AI players, one is smart and one is dull
 		 *  - fitness becomes higher when the smart AI player dies fewer times
 		 *    relative to the dull AI player
 		 */
 		gsu = new GmrSampleUtil({
-			// define patterns to randomize properties of actors
-			// pattern name
+			// define actors whose properties are changed by the GmrSampleUtil instance
+			// actor name
 			PlayerShip: {
-				// randomized properties
+				// changed properties
 				properties: [
 					// [property name, min value, max value]
 					['pos.x', 10, 90],
@@ -40,7 +42,7 @@ namespace RandomShips {
 					['speed', -2, 2],
 					['shotSpeed', -4, 4],
 				],
-				// a number of buttons that activate the randomizing operation
+				// a number of buttons that activate the changing operation
 				buttonNum: 2
 			},
 			EnemyShip: {
@@ -173,8 +175,8 @@ namespace RandomShips {
 			if (this.isEnemy) {
 				this.pos = new SAT.Vector(random.f(90, 10), -10);
 				this.vel = new SAT.Vector(0, 1);
-				// assign a GameMechRandomizer.Actor with the specific pattern name
-				//  - properties of this instance are randomized when a button is pressed
+				// assign a GameMechRandomizer.Actor with the specific actor name
+				//  - properties of this instance are changed when a button is pressed
 				this.gmrActor = this.game.gmr.actor(this, 'EnemyShip');
 				this.gmrActor.setEvaluationIndex(game.evaluationIndex);
 				this.shotSpeed = 1.5;
@@ -187,11 +189,11 @@ namespace RandomShips {
 				playerShip = this;
 			}
 			this.ppos = this.pos.clone();
-			// set an auto pressing pattern of a randomizing operation button
+			// set an auto pressing pattern of a changing operation button
 			// (button 0 is always pressed)
 			this.gmrActor.setAutoPressing({ isAlways: true }, 0);
 			if (this.isEnemy) {
-				// (button 1 changes the status of pressing by the probability 0.01)
+				// (button 1 switches the status of pressing by the probability 0.01)
 				this.gmrActor.setAutoPressing({ changingProbability: 0.01 }, 1);
 				this.gmrActor.setAutoPressing({ changingProbability: 0.005 }, 2);
 			} else {
