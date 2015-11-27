@@ -1,9 +1,9 @@
 /// <reference path="../../typings/lodash/lodash.d.ts" />
 /// <reference path="../../typings/snap.svg/snapsvg.d.ts" />
 /// <reference path="../../typings/SAT/SAT.d.ts" />
-/// <reference path="../../typings/GIFCaptureCanvas/GifCaptureCanvas.d.ts" />
 /// <reference path="MyGameUtil.ts" />
 /// <reference path="GmrSampleUtil.ts" />
+/// <reference path="GmrSampleScreen.ts" />
 /// <reference path="../GameMechRandomizer.ts" />
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -21,20 +21,22 @@ var RandomShips;
     var random;
     function onLoad() {
         /*
-         * cretate GmrSampleUtil instance
-         *  - GmrSampleUtil and GameMechRandomizer randomize properties of actors in
-         *    games and use them as seed entities of a genetic algorithm
-         *  - entities are selected according to the fitness of each game
+         * cretate a GmrSampleUtil instance
+         *  - GmrSampleUtil and GameMechRandomizer change properties of actors in
+         *    games when the button is pressed
+         *  - changing patterns are created randomly and these patterns evolve
+         *    with a genetic algorithm
+         *  - patterns are selected according to the fitness of each game
          *  - fitness shows the extent how the game is playable
          *  - fitness is evaluated by two AI players, one is smart and one is dull
          *  - fitness becomes higher when the smart AI player dies fewer times
          *    relative to the dull AI player
          */
         gsu = new GmrSampleUtil({
-            // define patterns to randomize properties of actors
-            // pattern name
+            // define actors whose properties are changed by the GmrSampleUtil instance
+            // actor name
             PlayerShip: {
-                // randomized properties
+                // changed properties
                 properties: [
                     // [property name, min value, max value]
                     ['pos.x', 10, 90],
@@ -44,7 +46,7 @@ var RandomShips;
                     ['speed', -2, 2],
                     ['shotSpeed', -4, 4],
                 ],
-                // a number of buttons that activate the randomizing operation
+                // a number of buttons that activate the changing operation
                 buttonNum: 2
             },
             EnemyShip: {
@@ -82,7 +84,7 @@ var RandomShips;
             updateEvaluation: updateEvaluation,
             initPlay: initPlay,
             updatePlay: updatePlay
-        });
+        }, new GmrSampleSnap.Screen());
         mgu = gsu.getMyGameUtil();
         random = mgu.random();
         gsu.evolve();
@@ -172,8 +174,8 @@ var RandomShips;
             if (this.isEnemy) {
                 this.pos = new SAT.Vector(random.f(90, 10), -10);
                 this.vel = new SAT.Vector(0, 1);
-                // assign a GameMechRandomizer.Actor with the specific pattern name
-                //  - properties of this instance are randomized when a button is pressed
+                // assign a GameMechRandomizer.Actor with the specific actor name
+                //  - properties of this instance are changed when a button is pressed
                 this.gmrActor = this.game.gmr.actor(this, 'EnemyShip');
                 this.gmrActor.setEvaluationIndex(game.evaluationIndex);
                 this.shotSpeed = 1.5;
@@ -187,11 +189,11 @@ var RandomShips;
                 playerShip = this;
             }
             this.ppos = this.pos.clone();
-            // set an auto pressing pattern of a randomizing operation button
+            // set an auto pressing pattern of a changing operation button
             // (button 0 is always pressed)
             this.gmrActor.setAutoPressing({ isAlways: true }, 0);
             if (this.isEnemy) {
-                // (button 1 changes the status of pressing by the probability 0.01)
+                // (button 1 switches the status of pressing by the probability 0.01)
                 this.gmrActor.setAutoPressing({ changingProbability: 0.01 }, 1);
                 this.gmrActor.setAutoPressing({ changingProbability: 0.005 }, 2);
             }
@@ -207,7 +209,7 @@ var RandomShips;
                     fill: fillColor,
                     stroke: strokeColor, strokeWidth: 2,
                 };
-                this.svg = gsu.snap.rect(-5, -5, 10, 10, 2).
+                this.svg = gsu.screen.snap.rect(-5, -5, 10, 10, 2).
                     transform("t" + this.pos.x + "," + this.pos.y).
                     attr(attrParams);
             }
@@ -329,7 +331,7 @@ var RandomShips;
             this.game.actors.push(new Shot(this.game, this.pos, v, false));
         };
         return Ship;
-    })(GmrSampleUtil.Actor);
+    })(GmrSampleSnap.Actor);
     var Shot = (function (_super) {
         __extends(Shot, _super);
         function Shot(game, pos, vel, isEnemy) {
@@ -354,7 +356,7 @@ var RandomShips;
                     fill: fillColor,
                     stroke: strokeColor, strokeWidth: 1,
                 };
-                this.svg = gsu.snap.rect(-2.5, -2.5, 5, 5, 1).
+                this.svg = gsu.screen.snap.rect(-2.5, -2.5, 5, 5, 1).
                     transform("t" + this.pos.x + "," + this.pos.y).
                     attr(attrParams);
             }
@@ -373,6 +375,6 @@ var RandomShips;
             }
         };
         return Shot;
-    })(GmrSampleUtil.Actor);
+    })(GmrSampleSnap.Actor);
 })(RandomShips || (RandomShips = {}));
 //# sourceMappingURL=RandomShips.js.map

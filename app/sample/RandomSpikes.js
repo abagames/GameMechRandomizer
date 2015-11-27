@@ -1,9 +1,9 @@
 /// <reference path="../../typings/lodash/lodash.d.ts" />
 /// <reference path="../../typings/snap.svg/snapsvg.d.ts" />
 /// <reference path="../../typings/SAT/SAT.d.ts" />
-/// <reference path="../../typings/GIFCaptureCanvas/GifCaptureCanvas.d.ts" />
 /// <reference path="MyGameUtil.ts" />
 /// <reference path="GmrSampleUtil.ts" />
+/// <reference path="GmrSampleScreen.ts" />
 /// <reference path="../GameMechRandomizer.ts" />
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -52,7 +52,7 @@ var RandomSpikes;
             updateEvaluation: updateEvaluation,
             initPlay: initPlay,
             updatePlay: updatePlay
-        });
+        }, new GmrSampleSnap.Screen());
         mgu = gsu.getMyGameUtil();
         random = mgu.random();
         gsu.evolve();
@@ -220,7 +220,7 @@ var RandomSpikes;
                     fill: fillColor,
                     stroke: strokeColor, strokeWidth: 2,
                 };
-                this.svg = gsu.snap.rect(-5, -5, 10, 10, 2).
+                this.svg = gsu.screen.snap.rect(-5, -5, 10, 10, 2).
                     transform("t" + this.pos.x + "," + this.pos.y).
                     attr(attrParams);
             }
@@ -301,7 +301,7 @@ var RandomSpikes;
             }
         };
         return Ball;
-    })(GmrSampleUtil.Actor);
+    })(GmrSampleSnap.Actor);
     var BallType;
     (function (BallType) {
         BallType[BallType["Player"] = 0] = "Player";
@@ -324,7 +324,7 @@ var RandomSpikes;
                 fill: '#7ee',
                 stroke: '#277', strokeWidth: 1,
             };
-            this.svg = gsu.snap.rect(-10, -2.5, 20, 5, 1).
+            this.svg = gsu.screen.snap.rect(-10, -2.5, 20, 5, 1).
                 transform("t" + this.pos.x + "," + this.pos.y).
                 attr(attrParams);
         }

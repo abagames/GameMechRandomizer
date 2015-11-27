@@ -1,8 +1,7 @@
 /// <reference path="../../typings/lodash/lodash.d.ts" />
-/// <reference path="../../typings/snap.svg/snapsvg.d.ts" />
-/// <reference path="../../typings/SAT/SAT.d.ts" />
 /// <reference path="../../typings/GIFCaptureCanvas/GifCaptureCanvas.d.ts" />
 /// <reference path="MyGameUtil.ts" />
+/// <reference path="GmrSampleScreen.ts" />
 /// <reference path="../GameMechrandomizer.ts" />
 declare var AnimationFrame: any;
 
@@ -18,7 +17,6 @@ class GmrSampleUtil {
 	evolutionResult: any;
 	evaluatingEntity: GameMechRandomizer.Entity;
 	evaluationFrameCount = 0;
-	snap: Snap.Paper;
 	generations: GmrSampleUtil.Generations;
 
 	constructor(public gmrPatterns: any,
@@ -26,12 +24,13 @@ class GmrSampleUtil {
 			initEvaluation: Function, updateEvaluation: Function,
 			initPlay: Function, updatePlay: Function
 		},
+		public screen: GmrSampleScreen,
 		public evaluationFrameNum = 8 * 60) {
 		this.mgu = new MyGameUtil();
 		this.mgu.initKeyboard();
 		this.af = new AnimationFrame();
-		//gcc = new GifCaptureCanvas();
-		//gcc.scale = 1;
+		this.gcc = new GifCaptureCanvas();
+		this.gcc.scale = 1;
 		this.random = new GameMechRandomizer.Random();
 		this.goToNextGenerations(true);
 	}
@@ -66,23 +65,8 @@ class GmrSampleUtil {
 		return this.mgu;
 	}
 
-	setupSnap() {
-		if (this.snap != null) {
-			this.snap.remove();
-			this.snap = null;
-		}
-		var snapDiv = document.getElementById('snapDiv');
-		var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-		svg.setAttribute('id', 'snapSvg');
-		snapDiv.appendChild(svg);
-		var snapSize = 100;
-		this.snap = Snap('#snapSvg');
-		this.snap.attr({ viewBox: `0 0 ${snapSize} ${snapSize}` });
-		var style = this.snap.node.style;
-		style.width = style.height = '100%';
-		style.margin = '0';
-		style.background = 'white';
-		this.mgu.initPointer(this.snap.node);
+	setupScreen() {
+		this.screen.setup(this.mgu);
 	}
 }
 
@@ -195,7 +179,7 @@ namespace GmrSampleUtil {
 			}
 			this.gsu.af.request(this.evaluateAndUpdatePlay);
 			this.functions.updatePlay();
-			//this.gsu.gcc.captureSvg(this.gsu.snap.node);	
+			this.gsu.screen.capture(this.gsu.gcc);
 		}
 
 		evaluate() {
@@ -223,9 +207,9 @@ namespace GmrSampleUtil {
 			this.gmrForPlay.setPatterns(this.playEntity.patterns);
 			this.setupGame();
 		}
-		
+
 		setupGame() {
-			this.gsu.setupSnap();
+			this.gsu.setupScreen();
 			this.functions.initPlay();
 		}
 
@@ -259,50 +243,6 @@ namespace GmrSampleUtil {
 				this.gmrForPlay.setPattternsFromString(dataStr);
 				this.isPlayingPatternsFromUrl = true;
 			} catch (e) { }
-		}
-	}
-
-	export class Actor {
-		pos: SAT.Vector;
-		vel: SAT.Vector;
-		ppos: SAT.Vector;
-		scale: SAT.Vector;
-		svg: Snap.Element = null;
-		collider: SAT.Polygon;
-		isRemoving = false;
-		ticks = 0;
-		gmrActor: GameMechRandomizer.Actor;
-
-		constructor() {
-			this.collider = new SAT.Box(new SAT.Vector(), 1, 1).toPolygon();
-			this.ppos = new SAT.Vector();
-			this.scale = new SAT.Vector(1, 1);
-		}
-
-		update() {
-			if (this.isRemoving) {
-				if (this.svg != null) {
-					this.svg.remove();
-					this.svg = null;
-				}
-				return false;
-			}
-			this.ppos.copy(this.pos);
-			this.pos.add(this.vel);
-			if (this.svg != null) {
-				var tx = Math.floor(this.pos.x * 100) / 100;
-				if (tx === NaN || tx < -1000 || tx > 1000) {
-					tx = 1000;
-				}
-				var ty = Math.floor(this.pos.y * 100) / 100;
-				if (ty === NaN || ty < -1000 || ty > 1000) {
-					ty = 1000;
-				}
-				this.svg.transform
-					(`t${tx},${ty} s${this.scale.x},${this.scale.y}`);
-			}
-			this.gmrActor.update();
-			this.ticks++;
 		}
 	}
 }

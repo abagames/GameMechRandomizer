@@ -1,9 +1,9 @@
 /// <reference path="../../typings/lodash/lodash.d.ts" />
 /// <reference path="../../typings/snap.svg/snapsvg.d.ts" />
 /// <reference path="../../typings/SAT/SAT.d.ts" />
-/// <reference path="../../typings/GIFCaptureCanvas/GifCaptureCanvas.d.ts" />
 /// <reference path="MyGameUtil.ts" />
 /// <reference path="GmrSampleUtil.ts" />
+/// <reference path="GmrSampleScreen.ts" />
 /// <reference path="../GameMechRandomizer.ts" />
 
 window.onload = () => {
@@ -48,7 +48,8 @@ namespace RandomSpikes {
 				updateEvaluation: updateEvaluation,
 				initPlay: initPlay,
 				updatePlay: updatePlay
-			});
+			},
+			new GmrSampleSnap.Screen());
 		mgu = gsu.getMyGameUtil();
 		random = mgu.random();
 		gsu.evolve();
@@ -169,7 +170,7 @@ namespace RandomSpikes {
 		}
 	}
 
-	class Ball extends GmrSampleUtil.Actor {
+	class Ball extends GmrSampleSnap.Actor {
 		gravity = 0;
 		bounce = 0;
 		baseScale = 1;
@@ -189,22 +190,22 @@ namespace RandomSpikes {
 				this.vel = new SAT.Vector(-1, 0);
 				this.gmrActor = this.game.gmr.actor(this, 'EnemyBall', randomSeed);
 			}
-			this.gmrActor.setAutoPressing({isAlways: true}, 0);
+			this.gmrActor.setAutoPressing({ isAlways: true }, 0);
 			if (this.type === BallType.PlayerAuto) {
 				var pp = null;
 				if (this.game.type === GameType.EvalDull) {
 					switch (this.game.evaluationIndex) {
 						case 2:
-							pp = {isAlways: true};
+							pp = { isAlways: true };
 							break;
 						case 3:
-							pp = {changingProbability: 1};
+							pp = { changingProbability: 1 };
 							break;
 					}
 				} else {
-					pp = {changingProbability: 0.05};
+					pp = { changingProbability: 0.05 };
 				}
-				if (pp != null){
+				if (pp != null) {
 					this.gmrActor.setAutoPressing(pp, 1);
 				}
 				if (GameType.isPathfinding(this.game.type)) {
@@ -212,8 +213,8 @@ namespace RandomSpikes {
 				}
 			}
 			if (!BallType.isPlayer(this.type)) {
-				this.gmrActor.setAutoPressing({changingProbability: 0.025}, 1);
-				this.gmrActor.setAutoPressing({changingProbability: 0.05}, 2);
+				this.gmrActor.setAutoPressing({ changingProbability: 0.025 }, 1);
+				this.gmrActor.setAutoPressing({ changingProbability: 0.05 }, 2);
 			}
 			if (this.game.type == GameType.Play) {
 				var fillColor = (BallType.isPlayer(this.type) ? '#ee7' : '#e7e');
@@ -222,7 +223,7 @@ namespace RandomSpikes {
 					fill: fillColor,
 					stroke: strokeColor, strokeWidth: 2,
 				};
-				this.svg = (<any>gsu.snap.rect(-5, -5, 10, 10, 2).
+				this.svg = (<any>gsu.screen.snap.rect(-5, -5, 10, 10, 2).
 					transform(`t${this.pos.x},${this.pos.y}`)).
 					attr(attrParams);
 			}
@@ -327,7 +328,7 @@ namespace RandomSpikes {
 				fill: '#7ee',
 				stroke: '#277', strokeWidth: 1,
 			};
-			this.svg = (<any>gsu.snap.rect(-10, -2.5, 20, 5, 1).
+			this.svg = (<any>gsu.screen.snap.rect(-10, -2.5, 20, 5, 1).
 				transform(`t${this.pos.x},${this.pos.y}`)).
 				attr(attrParams);
 		}

@@ -1,9 +1,9 @@
 /// <reference path="../../typings/lodash/lodash.d.ts" />
 /// <reference path="../../typings/snap.svg/snapsvg.d.ts" />
 /// <reference path="../../typings/SAT/SAT.d.ts" />
-/// <reference path="../../typings/GIFCaptureCanvas/GifCaptureCanvas.d.ts" />
 /// <reference path="MyGameUtil.ts" />
 /// <reference path="GmrSampleUtil.ts" />
+/// <reference path="GmrSampleScreen.ts" />
 /// <reference path="../GameMechRandomizer.ts" />
 
 window.onload = () => {
@@ -80,7 +80,8 @@ namespace RandomShips {
 				updateEvaluation: updateEvaluation,
 				initPlay: initPlay,
 				updatePlay: updatePlay
-			});
+			},
+			new GmrSampleSnap.Screen());
 		mgu = gsu.getMyGameUtil();
 		random = mgu.random();
 		gsu.evolve();
@@ -164,7 +165,7 @@ namespace RandomShips {
 	 * implement actors
 	 */
 	var playerShip: Ship;
-	class Ship extends GmrSampleUtil.Actor {
+	class Ship extends GmrSampleSnap.Actor {
 		speed = 2;
 		shotSpeed: number;
 		wasPressing = false;
@@ -208,7 +209,7 @@ namespace RandomShips {
 					fill: fillColor,
 					stroke: strokeColor, strokeWidth: 2,
 				};
-				this.svg = (<any>gsu.snap.rect(-5, -5, 10, 10, 2).
+				this.svg = (<any>gsu.screen.snap.rect(-5, -5, 10, 10, 2).
 					transform(`t${this.pos.x},${this.pos.y}`)).
 					attr(attrParams);
 			}
@@ -334,7 +335,7 @@ namespace RandomShips {
 		}
 	}
 
-	class Shot extends GmrSampleUtil.Actor {
+	class Shot extends GmrSampleSnap.Actor {
 		constructor(public game: Game,
 			pos: SAT.Vector,
 			vel: SAT.Vector,
@@ -356,7 +357,7 @@ namespace RandomShips {
 					fill: fillColor,
 					stroke: strokeColor, strokeWidth: 1,
 				};
-				this.svg = (<any>gsu.snap.rect(-2.5, -2.5, 5, 5, 1).
+				this.svg = (<any>gsu.screen.snap.rect(-2.5, -2.5, 5, 5, 1).
 					transform(`t${this.pos.x},${this.pos.y}`)).
 					attr(attrParams);
 			}
