@@ -1,11 +1,15 @@
 /// <reference path="../../typings/snap.svg/snapsvg.d.ts" />
 /// <reference path="../../typings/SAT/SAT.d.ts" />
+/// <reference path="../../typings/matter/matter-js.d.ts" />
 /// <reference path="../../typings/GIFCaptureCanvas/GifCaptureCanvas.d.ts" />
 /// <reference path="MyGameUtil.ts" />
+/// <reference path="../GameMechrandomizer.ts" />
 
 interface GmrSampleScreen {
 	snap?: Snap.Paper;
+	engine?: Matter.Engine;
 	setup(mgu: MyGameUtil);
+	update();
 	capture(gcc: GifCaptureCanvas);
 }
 
@@ -18,10 +22,10 @@ namespace GmrSampleSnap {
 				this.snap.remove();
 				this.snap = null;
 			}
-			var snapDiv = document.getElementById('snapDiv');
+			var screenDiv = document.getElementById('screenDiv');
 			var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 			svg.setAttribute('id', 'snapSvg');
-			snapDiv.appendChild(svg);
+			screenDiv.appendChild(svg);
 			var snapSize = 100;
 			this.snap = Snap('#snapSvg');
 			this.snap.attr({ viewBox: `0 0 ${snapSize} ${snapSize}` });
@@ -31,6 +35,8 @@ namespace GmrSampleSnap {
 			style.background = 'white';
 			mgu.initPointer(this.snap.node);
 		}
+
+		update() { }
 
 		capture(gcc: GifCaptureCanvas) {
 			gcc.captureSvg(this.snap.node);
@@ -75,6 +81,68 @@ namespace GmrSampleSnap {
 				}
 				this.svg.transform
 					(`t${tx},${ty} s${this.scale.x},${this.scale.y}`);
+			}
+			this.gmrActor.update();
+			this.ticks++;
+		}
+	}
+}
+
+namespace GmrSampleMatter {
+	export class Screen implements GmrSampleScreen {
+		engine: Matter.Engine;
+
+		setup(mgu: MyGameUtil) {
+			if (this.engine != null) {
+				Matter.Composite.clear(this.engine.world, false);
+				this.engine = null;
+			}
+			var screenDiv = document.getElementById('screenDiv');
+			var matterSize = 100;
+			this.engine = Matter.Engine.create(screenDiv, {
+				render: {
+					options: {
+						width: matterSize,
+						height: matterSize
+					}
+				}
+			});
+			var style = this.engine.render.canvas.style;
+			style.width = style.height = '100%';
+			style.margin = '0';
+			mgu.initPointer(this.engine.render.canvas);
+		}
+
+		update() {
+			var event = {
+				timestamp: this.engine.timing.timestamp
+			};
+			Matter.Events.trigger(this.engine, 'beforeTick', event);
+			Matter.Events.trigger(this.engine, 'tick', event);
+			Matter.Engine.update(this.engine, 1000 / 60, 1);
+			Matter.Events.trigger(this.engine, 'afterTick', event);
+		}
+
+		capture(gcc: GifCaptureCanvas) {
+			gcc.capture(this.engine.render.canvas);
+		}
+	}
+
+	export class Actor {
+		isRemoving = false;
+		body: Matter.Body;
+		gmrActor: GameMechRandomizer.Actor;
+		ticks = 0;
+
+		constructor(public engine: Matter.Engine) { }
+
+		update() {
+			if (this.isRemoving) {
+				if (this.body != null) {
+					Matter.Composite.removeBody(<any>this.engine.world, this.body);
+					this.body = null;
+				}
+				return false;
 			}
 			this.gmrActor.update();
 			this.ticks++;

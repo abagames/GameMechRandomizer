@@ -15,7 +15,7 @@ body {
     line-height: 0.5em;
 }
 
-div#snapDiv {
+div#screenDiv {
     width: 82vmin;
     height: 82vmin;
     margin: 0 auto 0 auto;

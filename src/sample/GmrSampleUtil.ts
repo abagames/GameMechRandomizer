@@ -179,6 +179,7 @@ namespace GmrSampleUtil {
 			}
 			this.gsu.af.request(this.evaluateAndUpdatePlay);
 			this.functions.updatePlay();
+			this.gsu.screen.update();
 			this.gsu.screen.capture(this.gsu.gcc);
 		}
 
