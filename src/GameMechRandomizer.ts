@@ -168,8 +168,7 @@ class GameMechRandomizer {
 
 	actor(obj: any, name: string = null, randomSeed: number = null) {
 		if (name == null) {
-			var prototypeName = /function (. {1,})\(/.exec(obj.constructor.toString());
-			name = prototypeName[1];
+			name = obj.constructor.toString().match(/^\s*function\s*(\S*)\s*\(/)[1];
 		}
 		var pt = this.patterns[name];
 		if (randomSeed == null) {
