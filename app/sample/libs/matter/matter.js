@@ -2098,6 +2098,12 @@ var Common = require('../core/Common');
 
             if (body.isSleeping && !forceUpdate)
                 continue;
+                
+            // don't update out ot world pos (changed by @abagames)
+            if (body.position.x < -50 || body.position.x > 150
+                || body.position.y < -50 || body.position.y > 150) {
+                continue;
+            }
 
             // don't update out of world bodies
             if (body.bounds.max.x < 0 || body.bounds.min.x > world.bounds.width
