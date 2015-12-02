@@ -119,6 +119,8 @@ declare module Matter
          * A World composite object that will contain all simulated bodies and constraints.
          */
         world:World;
+        
+        events: any;
     }
 
     interface IWorldOptions
@@ -711,6 +713,8 @@ declare module Matter
          * @returns A new vector of vectorA and vectorB subtracted
          */
         static sub ( vectorA:Vector,  vectorB:Vector ):Vector;
+        
+        static create(x?: number, y?: number):Vector;
     }
 
     export class Constraint
@@ -1408,6 +1412,10 @@ declare module Matter
     {
 
         canvas: HTMLCanvasElement;
+        
+        controller: any;
+        
+        static create: Function;
     }
 
     export class Events
