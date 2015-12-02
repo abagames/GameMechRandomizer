@@ -134,18 +134,25 @@ var MyGameUtil = (function () {
         SAT.Vector.prototype.angle = function () {
             return Math.atan2(this.x, -this.y) * 180 / Math.PI;
         };
-        SAT.Vector.prototype.set = function (x, y) {
-            if (x === void 0) { x = 0; }
-            if (y === void 0) { y = null; }
-            this.x = x;
-            if (!y) {
-                this.y = x;
-            }
-            else {
-                this.y = y;
-            }
-            return this;
-        };
+        SAT.Vector.prototype.set =
+            function (x, y) {
+                if (x === void 0) { x = 0; }
+                if (y === void 0) { y = null; }
+                if (typeof x === 'number') {
+                    this.x = x;
+                    if (!y) {
+                        this.y = x;
+                    }
+                    else {
+                        this.y = y;
+                    }
+                }
+                else {
+                    this.x = x.x;
+                    this.y = x.y;
+                }
+                return this;
+            };
         SAT.Vector.prototype.mul = function (v) {
             this.x *= v;
             this.y *= v;
@@ -177,7 +184,7 @@ var MyGameUtil = (function () {
                     maxY = maxX;
                 }
                 this.x = self.clamp(this.x, minX, maxX);
-                this.y = self.clamp(this.y, minX, maxX);
+                this.y = self.clamp(this.y, minY, maxY);
                 return this;
             };
         SAT.Vector.prototype.isIn =
