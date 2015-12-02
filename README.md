@@ -22,7 +22,7 @@ An infinite random awful action games generator using a [genetic algorithm](http
 [animation-frame](https://github.com/kof/animation-frame) /
 [game-keyboard](https://github.com/ericlathrop/game-keyboard) /
 [sat-js](https://github.com/jriecken/sat-js) /
-[Snap.svg](http://snapsvg.io/)
+[Snap.svg](http://snapsvg.io/) /
 [Matter.js](http://brm.io/matter-js/)
 
 #### Paper
