@@ -65,8 +65,8 @@ class GmrSampleUtil {
 		return this.mgu;
 	}
 
-	setupScreen() {
-		this.screen.setup(this.mgu);
+	initPlay() {
+		this.screen.initPlay(this.mgu);
 	}
 }
 
@@ -114,7 +114,7 @@ namespace GmrSampleUtil {
 
 		evolve() {
 			if (this.isPlayingPatternsFromUrl) {
-				this.setupGame();
+				this.initPlay();
 				this.evaluateAndUpdatePlay();
 				return;
 			}
@@ -179,7 +179,6 @@ namespace GmrSampleUtil {
 			}
 			this.gsu.af.request(this.evaluateAndUpdatePlay);
 			this.functions.updatePlay();
-			this.gsu.screen.update();
 			this.gsu.screen.capture(this.gsu.gcc);
 		}
 
@@ -206,11 +205,11 @@ namespace GmrSampleUtil {
 			p.textContent =
 			`generation: ${this.evolveCount} / fitness: ${this.playEntity.fitness}`;
 			this.gmrForPlay.setPatterns(this.playEntity.patterns);
-			this.setupGame();
+			this.initPlay();
 		}
 
-		setupGame() {
-			this.gsu.setupScreen();
+		initPlay() {
+			this.gsu.initPlay();
 			this.functions.initPlay();
 		}
 

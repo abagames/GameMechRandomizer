@@ -9,7 +9,7 @@ var GmrSampleSnap;
     var Screen = (function () {
         function Screen() {
         }
-        Screen.prototype.setup = function (mgu) {
+        Screen.prototype.initPlay = function (mgu) {
             if (this.snap != null) {
                 this.snap.remove();
                 this.snap = null;
@@ -27,7 +27,6 @@ var GmrSampleSnap;
             style.background = 'white';
             mgu.initPointer(this.snap.node);
         };
-        Screen.prototype.update = function () { };
         Screen.prototype.capture = function (gcc) {
             gcc.captureSvg(this.snap.node);
         };
@@ -75,38 +74,68 @@ var GmrSampleMatter;
 (function (GmrSampleMatter) {
     var Screen = (function () {
         function Screen() {
+            var _this = this;
+            this.matterSize = 100;
+            this.rendererForPlay = {
+                create: Matter.Render.create
+            };
+            this.rendererForEvaluation = {
+                create: function () { controller: _this.rendererForEvaluation; }
+            };
         }
-        Screen.prototype.setup = function (mgu) {
-            if (this.engine != null) {
-                Matter.Composite.clear(this.engine.world, false);
-                this.engine = null;
-            }
+        Screen.prototype.initPlay = function (mgu) {
             var screenDiv = document.getElementById('screenDiv');
-            var matterSize = 100;
-            this.engine = Matter.Engine.create(screenDiv, {
+            if (this.engineForPlay != null) {
+                screenDiv.removeChild(this.engineForPlay.render.canvas);
+                Matter.Composite.clear(this.engineForPlay.world, false);
+                this.engineForPlay = null;
+            }
+            this.engineForPlay = Matter.Engine.create(screenDiv, {
                 render: {
+                    controller: this.rendererForPlay,
                     options: {
-                        width: matterSize,
-                        height: matterSize
+                        width: this.matterSize,
+                        height: this.matterSize,
+                        wireframes: false
                     }
                 }
             });
-            var style = this.engine.render.canvas.style;
+            this.engineForPlay.isForPlay = true;
+            var style = this.engineForPlay.render.canvas.style;
             style.width = style.height = '100%';
             style.margin = '0';
-            mgu.initPointer(this.engine.render.canvas);
+            mgu.initPointer(this.engineForPlay.render.canvas);
         };
-        Screen.prototype.update = function () {
+        Screen.prototype.getEngineForEvaluation = function () {
+            return Matter.Engine.create({
+                render: {
+                    controller: this.rendererForEvaluation,
+                    options: {
+                        width: this.matterSize,
+                        height: this.matterSize
+                    }
+                }
+            });
+        };
+        Screen.prototype.clearEngine = function (engine) {
+            Matter.Composite.clear(engine.world, false);
+            Matter.Engine.clear(engine);
+            engine.events = {};
+        };
+        Screen.prototype.updateEngine = function (engine) {
             var event = {
-                timestamp: this.engine.timing.timestamp
+                timestamp: engine.timing.timestamp
             };
-            Matter.Events.trigger(this.engine, 'beforeTick', event);
-            Matter.Events.trigger(this.engine, 'tick', event);
-            Matter.Engine.update(this.engine, 1000 / 60, 1);
-            Matter.Events.trigger(this.engine, 'afterTick', event);
+            Matter.Events.trigger(engine, 'beforeTick', event);
+            Matter.Events.trigger(engine, 'tick', event);
+            Matter.Engine.update(engine, 1000 / 60, 1);
+            if (engine.isForPlay === true) {
+                engine.render.controller.world(engine);
+            }
+            Matter.Events.trigger(engine, 'afterTick', event);
         };
         Screen.prototype.capture = function (gcc) {
-            gcc.capture(this.engine.render.canvas);
+            gcc.capture(this.engineForPlay.render.canvas);
         };
         return Screen;
     })();
@@ -115,21 +144,45 @@ var GmrSampleMatter;
         function Actor(engine) {
             this.engine = engine;
             this.isRemoving = false;
+            this.staticValue = 0;
             this.ticks = 0;
+            this.applyingForce = Matter.Vector.create();
+            this.pos = new SAT.Vector();
         }
         Actor.prototype.update = function () {
+            this.pos.set(this.body.position);
+            if (!this.pos.isIn(10, 0, 100, 0, 100)) {
+                this.isRemoving = true;
+            }
             if (this.isRemoving) {
                 if (this.body != null) {
                     Matter.Composite.removeBody(this.engine.world, this.body);
-                    this.body = null;
                 }
                 return false;
             }
+            if (this.applyingForce.x !== 0 || this.applyingForce.y !== 0) {
+                Matter.Body.applyForce(this.body, this.body.position, this.applyingForce);
+                this.applyingForce.x = this.applyingForce.y = 0;
+            }
+            this.body.isStatic = this.staticValue > 0;
             this.gmrActor.update();
             this.ticks++;
         };
         return Actor;
     })();
     GmrSampleMatter.Actor = Actor;
+    var Actor;
+    (function (Actor) {
+        Actor.properties = [
+            ['body.restitution', 0.1, 1],
+            ['body.friction', 0.1, 1],
+            ['body.density', 0.001, 0.1],
+            ['body.force.x', -0.0005, 0.0005],
+            ['body.force.y', -0.0005, 0.0005],
+            ['staticValue', -1, 1],
+            ['applyingForce.x', -0.0001, 0.0001],
+            ['applyingForce.y', -0.0001, 0.0001]
+        ];
+    })(Actor = GmrSampleMatter.Actor || (GmrSampleMatter.Actor = {}));
 })(GmrSampleMatter || (GmrSampleMatter = {}));
 //# sourceMappingURL=GmrSampleScreen.js.map

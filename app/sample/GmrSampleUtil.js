@@ -43,8 +43,8 @@ var GmrSampleUtil = (function () {
     GmrSampleUtil.prototype.getMyGameUtil = function () {
         return this.mgu;
     };
-    GmrSampleUtil.prototype.setupScreen = function () {
-        this.screen.setup(this.mgu);
+    GmrSampleUtil.prototype.initPlay = function () {
+        this.screen.initPlay(this.mgu);
     };
     return GmrSampleUtil;
 })();
@@ -86,7 +86,7 @@ var GmrSampleUtil;
         }
         Generations.prototype.evolve = function () {
             if (this.isPlayingPatternsFromUrl) {
-                this.setupGame();
+                this.initPlay();
                 this.evaluateAndUpdatePlay();
                 return;
             }
@@ -151,7 +151,6 @@ var GmrSampleUtil;
             }
             this.gsu.af.request(this.evaluateAndUpdatePlay);
             this.functions.updatePlay();
-            this.gsu.screen.update();
             this.gsu.screen.capture(this.gsu.gcc);
         };
         Generations.prototype.evaluate = function () {
@@ -178,10 +177,10 @@ var GmrSampleUtil;
             p.textContent =
                 "generation: " + this.evolveCount + " / fitness: " + this.playEntity.fitness;
             this.gmrForPlay.setPatterns(this.playEntity.patterns);
-            this.setupGame();
+            this.initPlay();
         };
-        Generations.prototype.setupGame = function () {
-            this.gsu.setupScreen();
+        Generations.prototype.initPlay = function () {
+            this.gsu.initPlay();
             this.functions.initPlay();
         };
         Generations.prototype.createUrl = function () {
