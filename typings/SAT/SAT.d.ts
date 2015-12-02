@@ -20,7 +20,7 @@ declare module SAT {
         len2(): number;
         len(): number;
         angle(); number;
-        set(x?: number, y?: number): Vector;
+        set(x?: number | { x: number, y: number }, y?: number): Vector;
         mul(v: number): Vector;
         div(v: number): Vector;
         clamp(minX?: number, maxX?: number, minY?: number, maxY?: number): Vector;

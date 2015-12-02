@@ -37,7 +37,7 @@ class MyGameUtil {
 		this.keyboard = new Keyboard(KeyMap['US']);
 		this._stick = new SAT.Vector();
 	}
-	
+
 	stick(): SAT.Vector {
 		this._stick.set();
 		if (this.keyboard.isPressed('up') || this.keyboard.isPressed('w')) {
@@ -146,18 +146,24 @@ class MyGameUtil {
 		this.pointerPos.x = this.clamp(clientX - rect.left, 0, rect.width);
 		this.pointerPos.y = this.clamp(clientY - rect.top, 0, rect.height);
 	}
-	
+
 	extendsSAT() {
 		var self = this;
 		SAT.Vector.prototype.angle = function(): number {
 			return Math.atan2(this.x, -this.y) * 180 / Math.PI;
 		}
-		SAT.Vector.prototype.set = function(x: number = 0, y: number = null) {
-			this.x = x;
-			if (!y) {
-				this.y = x;
+		SAT.Vector.prototype.set =
+		function(x: number | { x: number, y: number } = 0, y: number = null) {
+			if (typeof x === 'number') {
+				this.x = x;
+				if (!y) {
+					this.y = x;
+				} else {
+					this.y = y;
+				}
 			} else {
-				this.y = y;
+				this.x = x.x;
+				this.y = x.y;
 			}
 			return this;
 		};
@@ -179,9 +185,9 @@ class MyGameUtil {
 			this.y = x * Math.sin(ag) + y * Math.cos(ag);
 			return this;
 		}
-		SAT.Vector.prototype.clamp = 
+		SAT.Vector.prototype.clamp =
 		function(minX: number = 0, maxX: number = 1,
-		minY: number = null, maxY: number = null) {
+			minY: number = null, maxY: number = null) {
 			if (!minY) {
 				minY = minX;
 			}
@@ -189,10 +195,10 @@ class MyGameUtil {
 				maxY = maxX;
 			}
 			this.x = self.clamp(this.x, minX, maxX);
-			this.y = self.clamp(this.y, minX, maxX);
+			this.y = self.clamp(this.y, minY, maxY);
 			return this;
 		}
-		SAT.Vector.prototype.isIn = 
+		SAT.Vector.prototype.isIn =
 		function(spacing: number = 0, minX: number = 0, maxX: number = 1, minY: number = 0, maxY: number = 1): boolean {
 			var x: number = this.x;
 			var y: number = this.y;
@@ -219,7 +225,7 @@ class MyGameUtil {
 			this.y += (target.y - this.y) * r;
 			return this;
 		}
-		SAT.Vector.prototype.moveAngle = 
+		SAT.Vector.prototype.moveAngle =
 		function(angle: number, speed: number): SAT.Vector {
 			var ag = angle * Math.PI / 180;
 			this.x += Math.sin(ag) * speed;
